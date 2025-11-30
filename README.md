@@ -5,13 +5,13 @@
 Instale as dependências rodando:
 
 ```shell
-npm i --force
+npm i
 ```
 
 E então rode o projeto:
 
 ```shell
-npx next dev
+npm run dev
 ```
 
 ## Back
