@@ -22,6 +22,7 @@ export default function HospedagensPage({ hospedagens, setHospedagens, onFetch }
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
 	const [editingHospedagem, setEditingHospedagem] = useState<Housing | null>(null)
 	const [titulares, setTitulares] = useState<Customer[]>([])
+	const [acomodacoes, setAcomodacoes] = useState([])
 	const [formData, setFormData] = useState({
 		clienteId: "",
 		acomodacaoId: "",
@@ -33,6 +34,15 @@ export default function HospedagensPage({ hospedagens, setHospedagens, onFetch }
 		try {
 			const response = await api.get('/clientes/tipo/TITULAR')
 			setTitulares(response.data)
+		} catch (err) {
+			console.error(err)
+		}
+	}
+
+	const fetchAcomodacoes = async () => {
+		try {
+			const response = await api.get('/acomodacoes')
+			setAcomodacoes(response.data)
 		} catch (err) {
 			console.error(err)
 		}
@@ -120,6 +130,7 @@ export default function HospedagensPage({ hospedagens, setHospedagens, onFetch }
 
 	useEffect(() => {
 		fetchTitulares()
+		fetchAcomodacoes()
 	}, [])
 
 	return (
@@ -171,15 +182,15 @@ export default function HospedagensPage({ hospedagens, setHospedagens, onFetch }
 										value={formData.acomodacaoId}
 										onValueChange={(value) => setFormData({ ...formData, acomodacaoId: value })}
 										required
-									>
+										>
 										<SelectTrigger>
 											<SelectValue placeholder="Selecione uma acomodação" />
 										</SelectTrigger>
 										<SelectContent>
-											{acomodacoesUnicas.map((acomodacao) => (
-												<SelectItem key={acomodacao.id} value={acomodacao.id}>
-													{acomodacao.nomePacote}
-												</SelectItem>
+											{acomodacoes.map((acomodacao) => (
+											<SelectItem key={acomodacao.id} value={acomodacao.id}>
+												{acomodacao.nomePacote}
+											</SelectItem>
 											))}
 										</SelectContent>
 									</Select>
@@ -220,8 +231,8 @@ export default function HospedagensPage({ hospedagens, setHospedagens, onFetch }
 							)}
 
 							<div className="flex gap-3">
-								<Button type="submit" className="flex-1" disabled={clientesUnicos.length === 0 || acomodacoesUnicas.length === 0}>
-									{clientesUnicos.length === 0 || acomodacoesUnicas.length === 0
+								<Button type="submit" className="flex-1" disabled={titulares.length === 0 || acomodacoes.length === 0}>
+									{titulares.length === 0 || acomodacoes.length === 0
 										? "Cadastre clientes e acomodações primeiro"
 										: editingHospedagem
 											? "Atualizar Hospedagem"
